@@ -91,7 +91,7 @@ bool callback(stdr_wall_following_controller::ExampleServiceMsgRequest& request,
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "stdr_wall_following_controller");
+  ros::init(argc, argv, "example_ros_service");
   ros::NodeHandle n;
 
   ros::Publisher twist_commander = n.advertise<geometry_msgs::Twist>("/robot0/cmd_vel", 1);

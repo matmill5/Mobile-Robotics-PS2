@@ -56,6 +56,8 @@ int main(int argc, char **argv) {
     ros::Rate loop_timer(1/sample_dt); 
     ros::spinOnce();
 
+    rotate_client_.call(angle_msg_);
+
     while(ros::ok){
         ROS_INFO("current state = %i",state);
         ROS_INFO("left obstacle?: %f", (double) leftObstacle);
@@ -74,6 +76,8 @@ int main(int argc, char **argv) {
                     state = 1;
                 }
                 else if (leftObstacle == false){
+                    ros::Rate lazy(1/1);
+                    lazy.sleep();
                     twist_cmd.linear.x=0.0;
                     for (int i = 0; i < 10; i++){
                         twist_commander.publish(twist_cmd);
@@ -92,11 +96,21 @@ int main(int argc, char **argv) {
                 break;
             
             case 2:
-                twist_cmd.linear.x=1.0;
+                twist_cmd.linear.x=speed;
                 rotate_client_.call(angle_msg_);
+                for (int i = 1;i>10;i++) ros::spinOnce();
                 while (!leftObstacle){
+                    if (frontObstacle) {
+                        twist_cmd.linear.x=0;
+                        for (int i = 0; i < 10; i++){
+                            twist_commander.publish(twist_cmd);
+                        }
+                        state = 0;
+                        break;
+                    }
                     twist_commander.publish(twist_cmd);
                     ros::spinOnce();
+                    ROS_INFO("stuck in case 2");
                 }
                 state = 0;
                 break;

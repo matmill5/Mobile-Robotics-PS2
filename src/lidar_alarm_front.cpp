@@ -18,9 +18,9 @@ int centerIndex = -1; //! NOT real. Update within callback
 
 // box's size
 //! please choose farEdge and nearEdge carefully.
-const float width = 0.5;            // half the width of the rectangular box
-const float farEdge = 0.7;          // distance to further edge
-const float nearEdge = 0.3;         // distance to closer edge (there should be a min value for this)
+const float width = 0.4;            // half the width of the rectangular box
+const float farEdge = 0.8;          // distance to further edge
+const float nearEdge = 0.4;         // distance to closer edge (there should be a min value for this)
 const double centerAngle = 0;  // angle of from the robot to the center of the box vs. robot's heading
 int leftCornerIndex, rightCornerIndex;
 double leftCornerAngle, rightCornerAngle;
