@@ -67,27 +67,29 @@ int main(int argc, char **argv) {
             case 0:
                 ROS_INFO("Case 0 is running");
                 twist_cmd.linear.x=speed;
-                twist_commander.publish(twist_cmd);
-                if (frontObstacle == true){
-                    twist_cmd.linear.x=0.0;
-                    for (int i = 0; i < 10; i++){
-                        twist_commander.publish(twist_cmd);
-                    }
-                    state = 1;
-                }
-                else if (leftObstacle == false){
-                    ros::Rate lazy(1/1);
+                for (int i = 1;i>10;i++) ros::spinOnce();
+                if (leftObstacle == false){
+                    ros::Rate lazy(1/0.4);
                     lazy.sleep();
                     twist_cmd.linear.x=0.0;
                     for (int i = 0; i < 10; i++){
                         twist_commander.publish(twist_cmd);
                     }
                     state = 2;
+                    break;
                 }
-                break;
-            
+                if (frontObstacle == true){
+                    twist_cmd.linear.x=0.0;
+                    for (int i = 0; i < 10; i++){
+                        twist_commander.publish(twist_cmd);
+                    }
+                    state = 1;
+                    break;
+                }
+                twist_commander.publish(twist_cmd);
+                break;           
             case 1:
-                ROS_INFO("Case 0 is running");
+                // rotate and check if front is block
                 rotate_client_.call(angle_msg_);
                 ros::spinOnce();
                 if (frontObstacle == false){
@@ -96,9 +98,14 @@ int main(int argc, char **argv) {
                 break;
             
             case 2:
-                twist_cmd.linear.x=speed;
                 rotate_client_.call(angle_msg_);
                 for (int i = 1;i>10;i++) ros::spinOnce();
+                if (leftObstacle == false) state = 3;
+                else state = 1;
+                break;
+            case 3:
+                twist_cmd.linear.x=speed;
+                
                 while (!leftObstacle){
                     if (frontObstacle) {
                         twist_cmd.linear.x=0;
